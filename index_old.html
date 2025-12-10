@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexGalia - Digitaliza tus procesos para liberar tus recursos</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* RESET & BASE */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #0f172a; /* Dark Slate Background */
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden; /* Prevent scrollbars for the immersive feel */
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* CANVAS BACKGROUND */
+        #network-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        /* CONTENT CONTAINER */
+        .container {
+            position: relative;
+            z-index: 10; /* Above canvas */
+            text-align: center;
+            padding: 2rem;
+            max-width: 800px;
+            /* Glassmorphism subtle effect to ensure readability */
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(4px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        /* TYPOGRAPHY */
+        .logo {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 4rem;
+            font-weight: 700;
+            letter-spacing: -2px;
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
+
+        .logo span.nex {
+            color: #fff;
+        }
+
+        .logo span.galia {
+            color: #f43f5e; /* Coral Accent */
+        }
+        
+        /* Little accent dot */
+        .logo::after {
+            content: '.';
+            color: #3b82f6; /* Blue Accent */
+        }
+
+        .description {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.25rem;
+            color: #94a3b8; /* Muted slate text */
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 2.5rem;
+            font-weight: 500;
+        }
+
+        .tagline {
+            font-family: 'Inter', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 300;
+            line-height: 1.2;
+        }
+
+        .tagline strong {
+            display: block;
+            font-weight: 600;
+            background: linear-gradient(90deg, #3b82f6, #60a5fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-top: 0.5rem;
+        }
+
+        /* ANIMATIONS */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .logo { font-size: 3rem; }
+            .description { font-size: 0.9rem; }
+            .tagline { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- The Interactive Background -->
+    <canvas id="network-canvas"></canvas>
+
+    <!-- The Brand Content -->
+    <main class="container">
+        <h1 class="logo">
+            <span class="nex">Nex</span><span class="galia">Galia</span>
+        </h1>
+        
+        <p class="description">Consultoría de Transformación Digital<br>& Diseño de Producto</p>
+        
+        <h2 class="tagline">
+            Digitaliza tu flujo.
+            <strong>Diseña tu futuro.</strong>
+        </h2>
+    </main>
+
+    <script>
+        /**
+         * NETWORK ANIMATION LOGIC
+         * Creates a constellation effect where nodes are attracted to the mouse.
+         */
+        const canvas = document.getElementById('network-canvas');
+        const ctx = canvas.getContext('2d');
+
+        let particlesArray;
+
+        // Configuration
+        const config = {
+            particleColor: 'rgba(59, 130, 246, 0.8)', // Blueish
+            lineColor: 'rgba(148, 163, 184, 0.15)', // Muted line color
+            particleCount: (window.innerWidth * window.innerHeight) / 9000, // Density
+            connectionDistance: 120,
+            mouseRadius: 150, // Range of mouse influence
+            baseSpeed: 0.5
+        };
+
+        // Mouse Position
+        let mouse = {
+            x: null,
+            y: null,
+            radius: config.mouseRadius
+        }
+
+        window.addEventListener('mousemove', function(event) {
+            mouse.x = event.x;
+            mouse.y = event.y;
+        });
+
+        // Handle resize
+        window.addEventListener('resize', function() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            config.particleCount = (canvas.width * canvas.height) / 9000;
+            init();
+        });
+
+        // Set initial size
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // Particle Class
+        class Particle {
+            constructor(x, y, directionX, directionY, size, color) {
+                this.x = x;
+                this.y = y;
+                this.directionX = directionX;
+                this.directionY = directionY;
+                this.size = size;
+                this.color = color;
+                
+                // Store original speed to recover after mouse interaction
+                this.baseX = directionX;
+                this.baseY = directionY;
+            }
+
+            // Draw method
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+
+            // Update method (Movement & Mouse Interaction)
+            update() {
+                // Border collision check
+                if (this.x > canvas.width || this.x < 0) {
+                    this.directionX = -this.directionX;
+                }
+                if (this.y > canvas.height || this.y < 0) {
+                    this.directionY = -this.directionY;
+                }
+
+                // MOUSE INTERACTION (The "Magnetic" Effect)
+                let dx = mouse.x - this.x;
+                let dy = mouse.y - this.y;
+                let distance = Math.sqrt(dx*dx + dy*dy);
+
+                if (distance < mouse.radius) {
+                    // If close to mouse, get pulled towards it slightly
+                    // We increase size slightly to indicate "activation"
+                    if (this.size < 4) this.size += 0.1;
+                    
+                    // Pull logic
+                    const forceDirectionX = dx / distance;
+                    const forceDirectionY = dy / distance;
+                    const force = (mouse.radius - distance) / mouse.radius;
+                    
+                    // Move towards mouse
+                    const directionX = forceDirectionX * force * 3; // Strength of pull
+                    const directionY = forceDirectionY * force * 3;
+
+                    this.x += directionX;
+                    this.y += directionY;
+                } else {
+                    // Return to normal size
+                    if (this.size > 2) this.size -= 0.1;
+                    
+                    // Normal movement
+                    this.x += this.directionX;
+                    this.y += this.directionY;
+                }
+
+                this.draw();
+            }
+        }
+
+        // Initialize particles
+        function init() {
+            particlesArray = [];
+            for (let i = 0; i < config.particleCount; i++) {
+                let size = (Math.random() * 2) + 1; // Random size 1-3px
+                let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
+                let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
+                let directionX = (Math.random() * 1) - 0.5; // Speed -0.5 to 0.5
+                let directionY = (Math.random() * 1) - 0.5;
+                let color = config.particleColor;
+
+                particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
+            }
+        }
+
+        // Animation Loop
+        function animate() {
+            requestAnimationFrame(animate);
+            ctx.clearRect(0, 0, innerWidth, innerHeight);
+
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+            }
+            connect();
+        }
+
+        // Connect lines between close particles
+        function connect() {
+            let opacityValue = 1;
+            for (let a = 0; a < particlesArray.length; a++) {
+                for (let b = a; b < particlesArray.length; b++) {
+                    let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x)) + 
+                                   ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
+                    
+                    if (distance < (config.connectionDistance * config.connectionDistance)) {
+                        opacityValue = 1 - (distance / 20000);
+                        ctx.strokeStyle = 'rgba(148, 163, 184,' + opacityValue + ')';
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                        ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        // Start
+        init();
+        animate();
+        
+        // Handle mouse out (stop effect when mouse leaves window)
+        window.addEventListener('mouseout', function(){
+             mouse.x = undefined;
+             mouse.y = undefined;
+        })
+
+    </script>
+</body>
+</html>

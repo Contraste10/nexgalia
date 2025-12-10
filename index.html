@@ -3,186 +3,519 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NexGalia - Digitaliza tus procesos para liberar tus recursos</title>
+    <title>NexGalia | Consultoría de Transformación Digital</title>
+    <meta name="description" content="NexGalia: Digitaliza tu flujo, diseña tu futuro. Consultoría de transformación digital y diseño de producto en Galicia.">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* RESET & BASE */
+        /* --- 1. CORE VARIABLES & RESET --- */
+        :root {
+            --bg-color: #0f172a;       /* Dark Slate */
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;     /* Blue Grey */
+            --accent-tech: #3b82f6;    /* Electric Blue */
+            --accent-human: #f43f5e;   /* Vibrant Coral */
+            --glass-bg: rgba(30, 41, 59, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            scroll-behavior: smooth;
         }
 
         body {
-            background-color: #0f172a; /* Dark Slate Background */
-            color: #ffffff;
+            background-color: var(--bg-color);
+            color: var(--text-main);
             font-family: 'Inter', sans-serif;
-            overflow: hidden; /* Prevent scrollbars for the immersive feel */
-            height: 100vh;
-            width: 100vw;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            overflow-x: hidden;
+            line-height: 1.6;
         }
 
-        /* CANVAS BACKGROUND */
+        /* --- 2. BACKGROUND CANVAS --- */
         #network-canvas {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 1;
+            z-index: -1; /* Detrás de todo */
+            opacity: 0.6; /* Efecto sutil */
+            pointer-events: none;
         }
 
-        /* CONTENT CONTAINER */
-        .container {
-            position: relative;
-            z-index: 10; /* Above canvas */
-            text-align: center;
-            padding: 2rem;
-            max-width: 800px;
-            /* Glassmorphism subtle effect to ensure readability */
-            background: rgba(15, 23, 42, 0.4);
-            backdrop-filter: blur(4px);
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            animation: fadeIn 1.5s ease-out;
-        }
-
-        /* TYPOGRAPHY */
-        .logo {
+        /* --- 3. TYPOGRAPHY --- */
+        h1, h2, h3, h4 {
             font-family: 'Space Grotesk', sans-serif;
-            font-size: 4rem;
             font-weight: 700;
-            letter-spacing: -2px;
+            letter-spacing: -0.02em;
+        }
+
+        .text-gradient {
+            background: linear-gradient(90deg, #ffffff 0%, var(--accent-tech) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .text-coral { color: var(--accent-human); }
+        .text-blue { color: var(--accent-tech); }
+        .text-muted { color: var(--text-muted); }
+
+        /* --- 4. NAVIGATION --- */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.2rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.3s ease;
+        }
+
+        .brand {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-decoration: none;
+            color: white;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover { color: white; }
+
+        .btn-cta {
+            padding: 0.8rem 1.5rem;
+            background: var(--accent-tech);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.5);
+            background: #2563eb;
+        }
+
+        /* --- 5. HERO SECTION --- */
+        header.hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 100px 20px 20px; /* Top padding for navbar */
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 5.5rem);
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            max-width: 900px;
+        }
+
+        .hero p {
+            font-size: clamp(1.1rem, 2vw, 1.5rem);
+            color: var(--text-muted);
+            max-width: 700px;
+            margin-bottom: 3rem;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            animation: bounce 2s infinite;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-10px);}
+            60% {transform: translateY(-5px);}
+        }
+
+        /* --- 6. SERVICES SECTION (Cards) --- */
+        section {
+            padding: 100px 5%;
+        }
+
+        .section-header {
+            margin-bottom: 60px;
+            max-width: 800px;
+        }
+
+        .section-header h2 {
+            font-size: 3rem;
             margin-bottom: 1rem;
+        }
+
+        .section-header p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            padding: 3rem 2rem;
+            border-radius: 20px;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent-tech);
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
             display: inline-block;
         }
 
-        .logo span.nex {
-            color: #fff;
+        .card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
         }
 
-        .logo span.galia {
-            color: #f43f5e; /* Coral Accent */
+        .card p {
+            color: var(--text-muted);
+            font-size: 1rem;
+            flex-grow: 1;
+        }
+
+        .tag {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            padding: 5px 10px;
+            border-radius: 50px;
+            background: rgba(255,255,255,0.05);
+        }
+
+        /* --- 7. PHILOSOPHY SECTION (Split) --- */
+        .split-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .philosophy-text h2 {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .value-item {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .value-icon {
+            min-width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-human);
+            font-size: 1.2rem;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(244, 63, 94, 0.1));
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 3rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
         }
         
-        /* Little accent dot */
-        .logo::after {
-            content: '.';
-            color: #3b82f6; /* Blue Accent */
+        /* Decorative element inside stat box */
+        .stat-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 60%);
+            animation: rotate 20s linear infinite;
         }
 
-        .description {
+        @keyframes rotate {
+            from {transform: rotate(0deg);}
+            to {transform: rotate(360deg);}
+        }
+
+        .stat-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .stat-number {
             font-family: 'Space Grotesk', sans-serif;
-            font-size: 1.25rem;
-            color: #94a3b8; /* Muted slate text */
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 2.5rem;
-            font-weight: 500;
+            font-size: 5rem;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
         }
 
-        .tagline {
-            font-family: 'Inter', sans-serif;
-            font-size: 2.5rem;
-            font-weight: 300;
-            line-height: 1.2;
-        }
-
-        .tagline strong {
-            display: block;
+        .stat-label {
+            color: var(--accent-human);
             font-weight: 600;
-            background: linear-gradient(90deg, #3b82f6, #60a5fa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-top: 0.5rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-top: 1rem;
         }
 
-        /* ANIMATIONS */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* --- 8. CTA & FOOTER --- */
+        .cta-section {
+            text-align: center;
+            padding: 120px 20px;
+            background: linear-gradient(180deg, transparent, rgba(59, 130, 246, 0.15));
         }
 
-        /* Responsive */
+        footer {
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding: 3rem 5%;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Tweaks */
+        @media (max-width: 900px) {
+            .split-layout { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 3rem; }
+        }
+
         @media (max-width: 768px) {
-            .logo { font-size: 3rem; }
-            .description { font-size: 0.9rem; }
-            .tagline { font-size: 1.8rem; }
+            .nav-links { display: none; } /* Mobile menu simplified for this demo */
+            nav { padding: 1rem; }
+            section { padding: 60px 20px; }
+            .section-header h2 { font-size: 2.2rem; }
+            .philosophy-text h2 { font-size: 2.2rem; }
         }
     </style>
 </head>
 <body>
 
-    <!-- The Interactive Background -->
+    <!-- Background Canvas -->
     <canvas id="network-canvas"></canvas>
 
-    <!-- The Brand Content -->
-    <main class="container">
-        <h1 class="logo">
-            <span class="nex">Nex</span><span class="galia">Galia</span>
-        </h1>
-        
-        <p class="description">Consultoría de Transformación Digital<br>& Diseño de Producto</p>
-        
-        <h2 class="tagline">
-            Digitaliza tu flujo.
-            <strong>Diseña tu futuro.</strong>
-        </h2>
-    </main>
+    <!-- Navigation -->
+    <nav>
+        <a href="#" class="brand">
+            Nex<span style="color:var(--accent-human)">Galia</span>.
+        </a>
+        <div class="nav-links">
+            <a href="#services">Servicios</a>
+            <a href="#philosophy">Filosofía</a>
+            <a href="#contact">Contacto</a>
+        </div>
+        <a href="#contact" class="btn-cta">Iniciar Proyecto</a>
+    </nav>
 
+    <!-- Hero Section -->
+    <header class="hero">
+        <h1 class="text-gradient">
+            Digitaliza tu flujo.<br>
+            <span style="color:white">Diseña tu futuro.</span>
+        </h1>
+        <p>
+            Consultoría de Transformación Digital B2B. <br>
+            Unimos la ingeniería de software robusta con un diseño de experiencia de usuario excepcional.
+        </p>
+        <div style="margin-top: 2rem;">
+            <a href="#services" class="btn-cta" style="padding: 1rem 2.5rem; font-size: 1.1rem;">Descubre Cómo</a>
+        </div>
+        <div class="scroll-indicator">
+            <i class="fa-solid fa-chevron-down"></i>
+        </div>
+    </header>
+
+    <!-- Services Section -->
+    <section id="services">
+        <div class="section-header">
+            <h2>Arquitectura de Servicios</h2>
+            <p>No entregamos "cajas negras". Ofrecemos un ecosistema completo para modernizar tu empresa desde el código hasta la interfaz.</p>
+        </div>
+
+        <div class="grid-3">
+            <!-- Card 1: Solutions -->
+            <div class="card">
+                <span class="tag text-blue">El Cerebro</span>
+                <div class="card-icon text-blue">
+                    <i class="fa-solid fa-server"></i>
+                </div>
+                <h3>NexGalia Solutions</h3>
+                <p>Desarrollo de apps de gestión empresarial a medida, automatización de flujos de trabajo y digitalización de procesos operativos. Eliminamos el Excel y la burocracia manual.</p>
+            </div>
+
+            <!-- Card 2: Studio -->
+            <div class="card" style="border-color: rgba(244, 63, 94, 0.3);">
+                <span class="tag text-coral">El Corazón</span>
+                <div class="card-icon text-coral">
+                    <i class="fa-solid fa-pen-nib"></i>
+                </div>
+                <h3>NexGalia Studio</h3>
+                <p>Diseño UX/UI de alto nivel. Convertimos herramientas internas complejas en interfaces intuitivas, modernas y agradables que tus empleados querrán usar.</p>
+            </div>
+
+            <!-- Card 3: Voice -->
+            <div class="card">
+                <span class="tag text-muted">La Voz</span>
+                <div class="card-icon text-muted">
+                    <i class="fa-solid fa-microphone-lines"></i>
+                </div>
+                <h3>NexGalia Voice</h3>
+                <p>Estrategia digital, generación de contenidos y UX Writing. Aseguramos que la tecnología hable el idioma de tu empresa y no el de las máquinas.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Philosophy Section -->
+    <section id="philosophy">
+        <div class="split-layout">
+            <div class="philosophy-text">
+                <h2>Tecnología con raíces, <br>Diseño con propósito.</h2>
+                <p style="color: var(--text-muted); margin-bottom: 2rem; font-size: 1.1rem;">
+                    Nacemos de la tensión entre dos mundos. La solidez de la ingeniería gallega y la ambición del diseño global.
+                </p>
+
+                <div class="value-item">
+                    <div class="value-icon"><i class="fa-solid fa-fingerprint"></i></div>
+                    <div>
+                        <h4 class="text-coral">Sentidiño Digital</h4>
+                        <p class="text-muted">No digitalizamos por moda. Aplicamos soluciones lógicas, escalables y rentables.</p>
+                    </div>
+                </div>
+
+                <div class="value-item">
+                    <div class="value-icon" style="color: var(--accent-tech)"><i class="fa-solid fa-layer-group"></i></div>
+                    <div>
+                        <h4 class="text-blue">Conexión Robusta</h4>
+                        <p class="text-muted">Integramos sistemas complejos para que parezcan sencillos. Backend potente, Frontend humano.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-box">
+                <div class="stat-content">
+                    <i class="fa-solid fa-rocket" style="font-size: 3rem; color: white; margin-bottom: 20px;"></i>
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Enfoque en Usuario</div>
+                    <p style="margin-top: 20px; color: #cbd5e1;">Si una herramienta es difícil de usar, es una herramienta rota.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA / Contact -->
+    <section id="contact" class="cta-section">
+        <h2 style="font-size: clamp(2.5rem, 5vw, 4rem); max-width: 800px; margin: 0 auto 2rem auto;">
+            ¿Listo para liberar tu potencial?
+        </h2>
+        <p style="font-size: 1.2rem; color: var(--text-muted); margin-bottom: 3rem;">
+            Hablemos de tu próximo paso digital. Sin tecnicismos innecesarios.
+        </p>
+        <a href="mailto:hola@nexgalia.com" class="btn-cta" style="padding: 1.2rem 3rem; font-size: 1.2rem;">
+            Contactar Ahora
+        </a>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 NexGalia. Santiago de Compostela. Todos los derechos reservados.</p>
+    </footer>
+
+    <!-- Interactive Script -->
     <script>
-        /**
-         * NETWORK ANIMATION LOGIC
-         * Creates a constellation effect where nodes are attracted to the mouse.
-         */
         const canvas = document.getElementById('network-canvas');
         const ctx = canvas.getContext('2d');
-
         let particlesArray;
 
-        // Configuration
+        // Configuración visual de los nodos
         const config = {
-            particleColor: 'rgba(59, 130, 246, 0.8)', // Blueish
-            lineColor: 'rgba(148, 163, 184, 0.15)', // Muted line color
-            particleCount: (window.innerWidth * window.innerHeight) / 9000, // Density
+            particleColor: 'rgba(59, 130, 246, 0.5)', // Azul eléctrico
+            lineColor: 'rgba(148, 163, 184, 0.1)',    // Líneas muy sutiles
+            particleCount: 0, // Se calcula según el tamaño de pantalla
             connectionDistance: 120,
-            mouseRadius: 150, // Range of mouse influence
-            baseSpeed: 0.5
+            mouseRadius: 150
         };
 
-        // Mouse Position
-        let mouse = {
-            x: null,
-            y: null,
-            radius: config.mouseRadius
-        }
+        // Posición del ratón
+        let mouse = { x: null, y: null, radius: config.mouseRadius };
 
         window.addEventListener('mousemove', function(event) {
             mouse.x = event.x;
             mouse.y = event.y;
         });
 
-        // Handle resize
-        window.addEventListener('resize', function() {
+        // Ajustar tamaño del canvas
+        function setCanvasSize() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-            config.particleCount = (canvas.width * canvas.height) / 9000;
+            // Densidad de partículas: 1 por cada 10000 px cuadrados
+            config.particleCount = (canvas.width * canvas.height) / 10000;
             init();
-        });
+        }
 
-        // Set initial size
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
-        // Particle Class
+        // Clase Partícula
         class Particle {
             constructor(x, y, directionX, directionY, size, color) {
                 this.x = x;
@@ -191,101 +524,76 @@
                 this.directionY = directionY;
                 this.size = size;
                 this.color = color;
-                
-                // Store original speed to recover after mouse interaction
-                this.baseX = directionX;
-                this.baseY = directionY;
             }
-
-            // Draw method
             draw() {
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
                 ctx.fillStyle = this.color;
                 ctx.fill();
             }
-
-            // Update method (Movement & Mouse Interaction)
             update() {
-                // Border collision check
-                if (this.x > canvas.width || this.x < 0) {
-                    this.directionX = -this.directionX;
-                }
-                if (this.y > canvas.height || this.y < 0) {
-                    this.directionY = -this.directionY;
-                }
+                // Rebote en bordes
+                if (this.x > canvas.width || this.x < 0) this.directionX = -this.directionX;
+                if (this.y > canvas.height || this.y < 0) this.directionY = -this.directionY;
 
-                // MOUSE INTERACTION (The "Magnetic" Effect)
+                // INTERACCIÓN CON EL RATÓN (Efecto Magnético)
                 let dx = mouse.x - this.x;
                 let dy = mouse.y - this.y;
                 let distance = Math.sqrt(dx*dx + dy*dy);
 
                 if (distance < mouse.radius) {
-                    // If close to mouse, get pulled towards it slightly
-                    // We increase size slightly to indicate "activation"
+                    // Si está cerca, se agranda y se acerca al ratón
                     if (this.size < 4) this.size += 0.1;
-                    
-                    // Pull logic
                     const forceDirectionX = dx / distance;
                     const forceDirectionY = dy / distance;
                     const force = (mouse.radius - distance) / mouse.radius;
-                    
-                    // Move towards mouse
-                    const directionX = forceDirectionX * force * 3; // Strength of pull
-                    const directionY = forceDirectionY * force * 3;
-
+                    // Fuerza de atracción
+                    const directionX = forceDirectionX * force * 2;
+                    const directionY = forceDirectionY * force * 2;
                     this.x += directionX;
                     this.y += directionY;
                 } else {
-                    // Return to normal size
+                    // Vuelve a su tamaño y ruta normal
                     if (this.size > 2) this.size -= 0.1;
-                    
-                    // Normal movement
                     this.x += this.directionX;
                     this.y += this.directionY;
                 }
-
                 this.draw();
             }
         }
 
-        // Initialize particles
+        // Inicializar
         function init() {
             particlesArray = [];
             for (let i = 0; i < config.particleCount; i++) {
-                let size = (Math.random() * 2) + 1; // Random size 1-3px
-                let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
-                let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
-                let directionX = (Math.random() * 1) - 0.5; // Speed -0.5 to 0.5
-                let directionY = (Math.random() * 1) - 0.5;
-                let color = config.particleColor;
-
-                particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
+                let size = (Math.random() * 2) + 1;
+                let x = Math.random() * (innerWidth - size * 2) + size * 2;
+                let y = Math.random() * (innerHeight - size * 2) + size * 2;
+                // Velocidad aleatoria
+                let directionX = (Math.random() * 0.4) - 0.2;
+                let directionY = (Math.random() * 0.4) - 0.2;
+                particlesArray.push(new Particle(x, y, directionX, directionY, size, config.particleColor));
             }
         }
 
-        // Animation Loop
+        // Loop de animación
         function animate() {
             requestAnimationFrame(animate);
             ctx.clearRect(0, 0, innerWidth, innerHeight);
-
             for (let i = 0; i < particlesArray.length; i++) {
                 particlesArray[i].update();
             }
             connect();
         }
 
-        // Connect lines between close particles
+        // Dibujar líneas entre puntos cercanos
         function connect() {
-            let opacityValue = 1;
             for (let a = 0; a < particlesArray.length; a++) {
                 for (let b = a; b < particlesArray.length; b++) {
-                    let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x)) + 
-                                   ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
-                    
+                    let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x)) + ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
                     if (distance < (config.connectionDistance * config.connectionDistance)) {
-                        opacityValue = 1 - (distance / 20000);
-                        ctx.strokeStyle = 'rgba(148, 163, 184,' + opacityValue + ')';
+                        let opacityValue = 1 - (distance / 15000);
+                        ctx.strokeStyle = 'rgba(148, 163, 184,' + opacityValue + ')'; 
                         ctx.lineWidth = 1;
                         ctx.beginPath();
                         ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
@@ -296,16 +604,13 @@
             }
         }
 
-        // Start
-        init();
-        animate();
+        // Event Listeners
+        window.addEventListener('resize', setCanvasSize);
+        window.addEventListener('mouseout', function(){ mouse.x = undefined; mouse.y = undefined; });
         
-        // Handle mouse out (stop effect when mouse leaves window)
-        window.addEventListener('mouseout', function(){
-             mouse.x = undefined;
-             mouse.y = undefined;
-        })
-
+        // Start
+        setCanvasSize();
+        animate();
     </script>
 </body>
 </html>
