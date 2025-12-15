@@ -348,6 +348,63 @@
             background: linear-gradient(180deg, transparent, rgba(59, 130, 246, 0.15));
         }
 
+        /* --- 9. NOTIFICATION SYSTEM --- */
+        .notification-container {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+        }
+
+        .notification-toast {
+            pointer-events: auto;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-left: 4px solid;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            color: white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 300px;
+            max-width: 400px;
+            transform: translateX(120%);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-size: 0.95rem;
+        }
+
+        .notification-toast.show {
+            transform: translateX(0);
+        }
+
+        .notification-toast.success {
+            border-left-color: #10b981; /* Emerald */
+        }
+
+        .notification-toast.error {
+            border-left-color: var(--accent-human); /* Coral */
+        }
+
+        .notification-icon {
+            font-size: 1.2rem;
+        }
+
+        .notification-toast.success .notification-icon {
+            color: #10b981;
+        }
+
+        .notification-toast.error .notification-icon {
+            color: var(--accent-human);
+        }
+
         /* Formulario de Contacto */
         .contact-form {
             max-width: 500px;

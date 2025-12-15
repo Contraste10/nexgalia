@@ -35,12 +35,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     throw new Error(result.message || result.errors?.join(', ') || 'Error en la respuesta del servidor');
                 }
 
-                alert('¡Gracias! Hemos recibido tu mensaje. Te contactaremos pronto.');
+                showNotification('¡Gracias! Hemos recibido tu mensaje. Te contactaremos pronto.', 'success');
                 form.reset();
                 
             } catch (error) {
                 console.error('Error al enviar formulario:', error);
-                alert(`Hubo un problema: ${error.message}`);
+                showNotification(`Hubo un problema: ${error.message}`, 'error');
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.innerText = originalText;
@@ -48,3 +48,45 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// Sistema de Notificaciones
+function showNotification(message, type = 'success') {
+    // Asegurar que el contenedor existe
+    let container = document.getElementById('notification-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'notification-container';
+        container.className = 'notification-container';
+        document.body.appendChild(container);
+    }
+
+    // Crear toast
+    const toast = document.createElement('div');
+    toast.className = `notification-toast ${type}`;
+    
+    // Icono según tipo
+    const iconClass = type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation';
+    
+    toast.innerHTML = `
+        <i class="fa-solid ${iconClass} notification-icon"></i>
+        <span>${message}</span>
+    `;
+
+    container.appendChild(toast);
+
+    // Activar animación de entrada
+    requestAnimationFrame(() => {
+        toast.classList.add('show');
+    });
+
+    // Eliminar automáticamente después de 5 segundos
+    setTimeout(() => {
+        toast.classList.remove('show');
+        // Esperar a que termine la transición de salida para eliminar del DOM
+        setTimeout(() => {
+            if (toast.parentNode) {
+                toast.parentNode.removeChild(toast);
+            }
+        }, 400); 
+    }, 5000);
+}
