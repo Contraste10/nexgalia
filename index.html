@@ -348,6 +348,55 @@
             background: linear-gradient(180deg, transparent, rgba(59, 130, 246, 0.15));
         }
 
+        /* Formulario de Contacto */
+        .contact-form {
+            max-width: 500px;
+            margin: 2rem auto 0;
+            text-align: left;
+            background: var(--glass-bg);
+            padding: 2.5rem;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(12px);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--accent-tech);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent-tech);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
         footer {
             border-top: 1px solid rgba(255,255,255,0.05);
             padding: 3rem 5%;
@@ -493,9 +542,29 @@
             Hablemos de cómo la tecnología puede ayudarte de verdad, sin jerga técnica ni discursos vacíos.
             <br>Solo una conversación honesta sobre lo que necesitas y cómo podemos acompañarte.
         </p>
-        <a href="mailto:hola@nexgalia.com" class="btn-cta" style="padding: 1.2rem 2.5rem; font-size: 1.2rem;">
-            Quiero Hablar con Vosotros
-        </a>
+        
+        <form id="contact-form" class="contact-form">
+            <div class="form-group">
+                <label for="name">Soy</label>
+                <input type="text" id="name" name="name" placeholder="Nombre y Apellido" required>
+            </div>
+            <div class="form-group">
+                <label for="company">De</label>
+                <input type="text" id="company" name="company" placeholder="Nombre de tu empresa" required>
+            </div>
+            <div class="form-group">
+                <label for="contact">Mi contacto es</label>
+                <input type="text" id="contact" name="contact" placeholder="Email o teléfono" required>
+            </div>
+            <div class="form-group">
+                <label for="team-size">Somos un equipo de</label>
+                <input type="text" id="team-size" name="team_size" placeholder="Nº trabajadores (aprox.)">
+                <span class="text-xs text-blue mt-1 block">Puede ser un número aproximado.</span>
+            </div>
+            <button type="submit" class="btn-cta" style="padding: 1.2rem 2.5rem; font-size: 1.2rem; width: 100%; margin-top: 1rem;">
+                Quiero Hablar con Vosotros
+            </button>
+        </form>
     </section>
 
     <footer>
@@ -503,6 +572,7 @@
     </footer>
 
     <!-- Interactive Script -->
+    <script src="js/contacto-handler.js"></script>
     <script>
         const canvas = document.getElementById('network-canvas');
         const ctx = canvas.getContext('2d');

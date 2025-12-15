@@ -1,0 +1,15 @@
+name = "nexgalia-contact-worker"
+main = "src/index.js"
+compatibility_date = "2023-10-25"
+
+# Binding a D1 Database
+[[d1_databases]]
+binding = "DB"
+database_name = "nexgalia-db"
+database_id = "bf4c3e03-008c-4ebb-9f01-78463caf448c" # Se obtiene con 'wrangler d1 create nexgalia-db'
+
+# Variables de entorno (Telegram)
+# Se recomienda usar 'wrangler secret put' para estos valores en producción
+[vars]
+#TELEGRAM_BOT_TOKEN = "reemplazar-en-wrangler-secret" 
+#TELEGRAM_CHAT_ID = "reemplazar-en-wrangler-secret"
